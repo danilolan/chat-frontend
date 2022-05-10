@@ -11,7 +11,8 @@ type MsgType = {
 }
 type MsgDataType = MsgType[]
 
-const conectionUrl = 'http://localhost:3001'
+const conectionUrl = import.meta.env.VITE_SERVER_ADRESS
+console.log(conectionUrl)
 let socket : Socket
 
 function Chat () {

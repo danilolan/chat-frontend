@@ -6,7 +6,7 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "deploy": "git push heroku"
+    "deploy": "git push heroku main"
   },
   "dependencies": {
     "@typescript-eslint/eslint-plugin": "^5.23.0",

@@ -39,7 +39,7 @@ function Chat () {
     socket.disconnect()
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: any) => {
     e.preventDefault()
     if (input) {
       socket.emit('sendMessage', { author: name, data: input })

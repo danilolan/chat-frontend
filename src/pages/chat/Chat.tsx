@@ -28,12 +28,15 @@ function Chat () {
     })
 
     socket.on('receivedMessage', (msg) => {
-      console.log(msg)
       setMsgData(msg)
     })
 
     return () => closeComponent()
   }, [])
+
+  useEffect(() => {
+    document.getElementById('display')!.scrollTo(0, document.getElementById('display')!.scrollHeight)
+  }, [msgData])
 
   function closeComponent () {
     socket.disconnect()
@@ -67,7 +70,7 @@ function Chat () {
   return (
     <section className={styles.chat}>
       <div className={styles.chat_container}>
-        <div className={styles.display}>
+        <div className={styles.display} id='display'>
           {renderMsgs()}
         </div>
         <div className={styles.input_row}>

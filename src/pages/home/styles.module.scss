@@ -10,7 +10,6 @@
     background-color: #1D1D1D;
     box-shadow: 0px 0px 5px 2px #000;
     width: 500px;
-    height: 400px;
     border-radius: 10px;
     display: flex;
     flex-direction: column;
@@ -22,6 +21,15 @@
       font-size: 3rem;
       font-weight: 500;
     }
+    .room_btn{
+      font-size: 1rem;
+      margin: 10px;
+      box-shadow: none;
+      margin-bottom: 50px;
+      &.active{
+        background-color: rgba(88, 221, 88, 0.904);
+      }
+    }
     input{
       border: none;
       font-size: 2rem;
@@ -32,7 +40,8 @@
       width: 400px;
     }
     button{
-      margin-top: 30px;
+      margin-top: 50px;
+      margin-bottom: 50px;
       font-size: 1.6rem;
       color: #121212;
       background-color: #E1E1E1;
@@ -51,6 +60,10 @@
       &:active{
         box-shadow: none;
         transform: translateY(3px);
+      }
+      &:disabled{
+        filter: brightness(0.3);
+        
       }
     }
   }

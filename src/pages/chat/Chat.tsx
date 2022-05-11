@@ -1,51 +1,48 @@
 import { useState, useEffect } from 'react'
 import styles from './styles.module.scss'
+import { Socket } from 'socket.io-client'
 
-import { io, Socket } from 'socket.io-client'
-
-type nameType = string | null
-
+type NameType = string | null
+type RoomNameType = string | null
 type MsgType = {
+  roomName: string
   author: string,
-  data: string
+  content: string
 }
 type MsgDataType = MsgType[]
+type PropTypes = {
+  socket: Socket
+}
 
-const conectionUrl = import.meta.env.VITE_SERVER_ADRESS
-console.log(conectionUrl)
-let socket : Socket
-
-function Chat () {
-  const [msgData, setMsgData] = useState<MsgDataType>()
+function Chat ({ socket } : PropTypes) {
+  const [msgData, setMsgData] = useState<MsgDataType>([])
   const [input, setInput] = useState<string>('')
-  const [name, setName] = useState<nameType>('')
+  const [name, setName] = useState<NameType>('')
+  const [roomName, setRoomName] = useState<RoomNameType>('')
 
   useEffect(() => {
-    setName(localStorage.getItem('name'))
+    const nameLocal = localStorage.getItem('name')
+    const roomNameLocal = localStorage.getItem('room')
+    setName(nameLocal)
+    setRoomName(roomNameLocal)
 
-    socket = io(conectionUrl, {
-      transports: ['websocket', 'polling', 'flashsocket']
+    socket.emit('join room', roomNameLocal, (messages : MsgDataType) => {
+      setMsgData(messages)
     })
 
-    socket.on('receivedMessage', (msg) => {
-      setMsgData(msg)
+    socket.on('new message', (messages) => {
+      setMsgData(messages)
     })
-
-    return () => closeComponent()
   }, [])
 
   useEffect(() => {
     document.getElementById('display')!.scrollTo(0, document.getElementById('display')!.scrollHeight)
   }, [msgData])
 
-  function closeComponent () {
-    socket.disconnect()
-  }
-
   const handleSubmit = (e: any) => {
     e.preventDefault()
     if (input) {
-      socket.emit('sendMessage', { author: name, data: input })
+      socket.emit('send message', { roomName, author: name, content: input })
       setInput('')
     }
   }
@@ -60,7 +57,7 @@ function Chat () {
             {msg.author}
           </label>
           <div className={styles.data}>
-            {msg.data}
+            {msg.content}
           </div>
         </div>
       )

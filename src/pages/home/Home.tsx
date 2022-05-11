@@ -9,8 +9,11 @@ function Home () {
 
   const navigate = useNavigate()
 
-  const login = () => {
+  const onSubmit = () => {
+    const roomName = 'room' + room
+
     localStorage.setItem('name', name)
+    localStorage.setItem('room', roomName)
     navigate('/chat')
   }
   return (
@@ -33,7 +36,7 @@ function Home () {
         />
         <button
           disabled={ !room || !name }
-          onClick={() => login()}
+          onClick={() => onSubmit()}
         >
           Login
         </button>

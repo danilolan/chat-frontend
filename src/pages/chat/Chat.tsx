@@ -12,24 +12,16 @@ type MsgType = {
 type MsgDataType = MsgType[]
 type PropTypes = {
   socket: Socket
+  messages: MsgDataType,
+  roomName: RoomNameType,
+  name: NameType
 }
 
-function Chat ({ socket } : PropTypes) {
-  const [msgData, setMsgData] = useState<MsgDataType>([])
+function Chat ({ socket, messages, roomName, name } : PropTypes) {
+  const [msgData, setMsgData] = useState<MsgDataType>(messages)
   const [input, setInput] = useState<string>('')
-  const [name, setName] = useState<NameType>('')
-  const [roomName, setRoomName] = useState<RoomNameType>('')
 
   useEffect(() => {
-    const nameLocal = localStorage.getItem('name')
-    const roomNameLocal = localStorage.getItem('room')
-    setName(nameLocal)
-    setRoomName(roomNameLocal)
-
-    socket.emit('join room', roomNameLocal, (messages : MsgDataType) => {
-      setMsgData(messages)
-    })
-
     socket.on('new message', (messages) => {
       setMsgData(messages)
     })

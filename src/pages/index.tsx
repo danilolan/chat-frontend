@@ -1,4 +1,4 @@
-import { AppRoutes } from '../routes'
+import Home from '../pages/home'
 import { io, Socket } from 'socket.io-client'
 
 const conectionUrl : string = import.meta.env.VITE_SERVER_ADRESS
@@ -8,7 +8,7 @@ const socket : Socket = io(conectionUrl, {
 
 function App () {
   return (
-    <AppRoutes socket={socket}/>
+    <Home socket={socket}/>
   )
 }
 

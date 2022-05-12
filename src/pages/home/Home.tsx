@@ -1,47 +1,62 @@
-import { useState } from 'react'
+/* eslint-disable operator-linebreak */
 import styles from './styles.module.scss'
+import { useState, useEffect } from 'react'
 
-import { useNavigate } from 'react-router-dom'
+import { Socket } from 'socket.io-client'
+import Chat from '../chat'
 
-function Home () {
-  const [name, setName] = useState<string>('')
-  const [room, setroom] = useState<number>(0)
+interface PropTypes {
+  socket: Socket
+}
 
-  const navigate = useNavigate()
+function Home ({ socket } : PropTypes) {
+  const [name, setName] = useState('')
+  const [roomName, setRoomName] = useState('abcd')
+  const [messages, setMessages] = useState([])
+  const [inChat, setInChat] = useState(false)
 
   const onSubmit = () => {
-    const roomName = 'room' + room
-
-    localStorage.setItem('name', name)
-    localStorage.setItem('room', roomName)
-    navigate('/chat')
+    if (name) {
+      socket.emit('join room', roomName, (msg : any) => {
+        setMessages(msg)
+        setInChat(true)
+      })
+    }
   }
+
+  useEffect(() => {
+    if (window.location.hash) {
+      setRoomName(window.location.hash.replace('#', ''))
+    } else {
+      setRoomName('abcd')
+      window.location.hash = 'abcd'
+    }
+  }, [])
+
   return (
-    <section className={styles.home}>
+    !inChat
+      ? <section className={styles.home}>
       <div className={styles.ui}>
         <h2>Type your name:</h2>
-        <div>
-          <button onClick={() => setroom(1)} className={`${styles.room_btn} ${room === 1 && styles.active}`}>
-            Room 1
-          </button>
-          <button onClick={() => setroom(2)} className={`${styles.room_btn} ${room === 2 && styles.active}`}>
-            Room 2
-          </button>
-        </div>
         <input
           type="text"
-          name='name'
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
         <button
-          disabled={ !room || !name }
           onClick={() => onSubmit()}
         >
-          Login
+          Enter in room
         </button>
       </div>
     </section>
+      :
+    <Chat
+      socket={socket}
+      name={name}
+      messages={messages}
+      roomName={roomName}
+    />
   )
 }
 
